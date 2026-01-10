@@ -117,3 +117,27 @@ It is meant for **internal review and interview preparation**, not for public re
 ### Notes
 - This structure improves testability and scalability.
 - Behavior remained unchanged after refactor (important check).
+
+---
+
+## Day 7 — Centralized Error Handling (Middleware)
+
+### Goal
+- Centralize error handling using Express error middleware.
+- Reduce duplication and prepare controllers to stay thin.
+
+### Learned
+- Express identifies error middleware by the `(err, req, res, next)` signature.
+- Error middleware must be registered **after routes**.
+- System-level errors (DB errors) should be handled centrally.
+
+### Changes Made
+- Added global error-handling middleware.
+- Wired error middleware after routes in `server.js`.
+
+### Notes
+- Controller still contains duplicate error handling temporarily.
+- This is a transitional phase to avoid breaking behavior.
+- Next step will be to remove controller-level system error handling and delegate fully to middleware.
+
+---

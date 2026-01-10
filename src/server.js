@@ -3,6 +3,7 @@ require("dotenv").config();
 
 const connectDB= require("./config/db");
 const userRoutes=require("./routes/user.routes");
+const errorHandler=require("./middleware/error.middleware");
 
 const app = express();
 
@@ -14,6 +15,9 @@ app.use(express.json());
 
 //routes
 app.use("/users",userRoutes);
+
+//error handling middleware (MUST be after routes)
+app.use(errorHandler);
 
 const startServer= async()=>{
 
