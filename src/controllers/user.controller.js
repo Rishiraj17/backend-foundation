@@ -1,7 +1,7 @@
-const User = require("../models/user.model");
+
 const { createUserService } = require("../services/user.service");
 
-const createUser = async (req,res)=>{
+const createUser = async (req, res, next)=>{
     try{
         const { name,email }= req.body;
 
@@ -19,17 +19,7 @@ const createUser = async (req,res)=>{
             user
         });
     } catch(error){
-        //duplicate email error
-        if(error.code===11000){
-            return res.status(409).json({
-                message:"Email already exists"
-            });
-        }
-
-        res.status(500).json({
-            message:"Error creating user",
-            error: error.message
-        });
+        next(error); // delegate to centralized error middleware
     }
     
 };

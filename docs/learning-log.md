@@ -141,3 +141,33 @@ It is meant for **internal review and interview preparation**, not for public re
 - Next step will be to remove controller-level system error handling and delegate fully to middleware.
 
 ---
+
+## Day 8 — Error Propagation with `next(err)`
+
+### Goal
+- Complete migration to centralized error handling.
+- Remove system-level error handling from controllers.
+
+### Learned
+- `next(err)` forwards errors to Express error-handling middleware.
+- Controllers must explicitly declare `next` to use it.
+- Express differentiates normal middleware vs error middleware by function signature.
+
+### Changes Made
+- Updated controller to use `next(err)` for unexpected/system errors.
+- Centralized duplicate and server error responses in error middleware.
+
+### Issue Faced
+- Encountered `next is not defined` error.
+
+### Root Cause
+- Controller function did not declare `next` as a parameter.
+
+### Fix
+- Updated controller signature to `(req, res, next)`.
+
+### Notes
+- Controllers now handle only validation and success responses.
+- Error middleware owns all system-level error responses.
+
+---
