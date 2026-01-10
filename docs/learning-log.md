@@ -99,3 +99,21 @@ It is meant for **internal review and interview preparation**, not for public re
 - Using `return res...` is necessary to prevent sending multiple responses.
 
 ---
+
+## Day 6 — Service Layer Introduction
+
+### Goal
+- Separate business logic from HTTP logic.
+
+### Learned
+- What a service layer is and why it exists.
+- Controllers should only handle request/response.
+- Services should be framework-agnostic.
+
+### Changes Made
+- Moved user creation logic from controller to service.
+- Controller now delegates work to service.
+
+### Notes
+- This structure improves testability and scalability.
+- Behavior remained unchanged after refactor (important check).
