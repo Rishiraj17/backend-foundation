@@ -171,3 +171,26 @@ It is meant for **internal review and interview preparation**, not for public re
 - Error middleware owns all system-level error responses.
 
 ---
+
+## Day 9 — Validation Middleware
+
+### Goal
+- Move request validation out of controllers.
+- Keep controllers focused on flow and business logic.
+
+### Learned
+- Validation fits naturally as middleware in Express.
+- Middleware can block invalid requests before reaching controllers.
+- Clean middleware ordering makes request flow predictable.
+
+### Changes Made
+- Created validation middleware for user creation.
+- Removed validation logic from controller.
+- Wired validation middleware into user routes.
+
+### Notes
+- Controllers now assume validated input.
+- Validation is reusable and centralized.
+- This structure scales better as APIs grow.
+
+---
