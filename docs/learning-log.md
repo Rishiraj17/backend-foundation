@@ -194,3 +194,25 @@ It is meant for **internal review and interview preparation**, not for public re
 - This structure scales better as APIs grow.
 
 ---
+
+## Day 10 — Request Normalization & Async Validation
+
+### Goal
+- Normalize incoming request data.
+- Catch duplicate emails early using async validation middleware.
+
+### Learned
+- Validation middleware can be synchronous or asynchronous.
+- Normalization (trim, lowercase) should happen before business logic.
+- Async validation can query the database before controller/service execution.
+
+### Changes Made
+- Added normalization for name and email in validation middleware.
+- Added async check to detect existing email before saving user.
+
+### Notes
+- Middleware validation is the first line of defense.
+- Database unique constraint remains the final authority to handle race conditions.
+- Controllers and services remained unchanged.
+
+---
