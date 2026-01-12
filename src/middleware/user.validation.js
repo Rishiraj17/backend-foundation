@@ -1,7 +1,9 @@
-const validateCreateUser = async (req,res,next)=>{
-    const { name, email } = req.body;
+const User = require("../models/user.model");
 
-    if(!name||!email){
+const validateCreateUser = async (req,res,next)=>{
+    const { name, email, password } = req.body;
+
+    if(!name||!email||!password){
         return res.status(400).json({
             message:"Name and email are required"
         });
@@ -23,6 +25,7 @@ const validateCreateUser = async (req,res,next)=>{
     //attach normalized data
     req.body.name=name;
     req.body.email=email;
+    req.body.password=password;
 
     next();
 };

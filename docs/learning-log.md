@@ -216,3 +216,29 @@ It is meant for **internal review and interview preparation**, not for public re
 - Controllers and services remained unchanged.
 
 ---
+
+## Day 11 — Password Hashing (Auth Foundation)
+
+### Goal
+- Store user passwords securely using hashing.
+- Prepare the system for authentication without implementing login yet.
+
+### Learned
+- Passwords must never be stored in plain text.
+- Hashing is one-way and different from encryption.
+- `bcrypt` is industry standard for password hashing.
+- Hashing belongs in the service layer as business logic.
+
+### Changes Made
+- Added password field to User schema.
+- Installed bcrypt for hashing.
+- Hashed password before saving user to database.
+- Updated validation middleware to require password.
+- Updated controller to pass password to service.
+
+### Notes
+- Stored password is a hash, not the original value.
+- Salt rounds (10) balance security and performance.
+- Login and password comparison will be added later using `bcrypt.compare()`.
+
+---
