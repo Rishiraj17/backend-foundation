@@ -269,3 +269,25 @@ It is meant for **internal review and interview preparation**, not for public re
 
 ---
 
+## Day 13 — Model-Level Normalization & Data Safety
+
+### Goal
+- Guarantee consistent data storage regardless of request source.
+- Prevent duplicate users caused by spacing or case differences.
+
+### Learned
+- Middleware normalization improves API experience.
+- Model-level normalization guarantees database consistency.
+- Defense-in-depth avoids bugs caused by missed validation.
+- DB unique constraints remain the final enforcement layer.
+
+### Changes Made
+- Added trim and lowercase normalization to User model fields.
+- Verified duplicate emails are blocked regardless of spacing or case.
+
+### Notes
+- Existing records are not auto-migrated.
+- Middleware normalization is intentionally retained.
+
+
+---
