@@ -30,6 +30,22 @@ const validateCreateUser = async (req,res,next)=>{
     next();
 };
 
+const validateLoginUser = (req, res, next) =>{
+    let { email, password } = req.body;
+
+    if( !email || !password){
+        return res.status(400).json({
+            message:"Email and password are required"
+        });
+    }
+
+    req.body.email = email.trim().toLowerCase();
+    req.body.password = password;
+
+    next();
+};
+
 module.exports={
-    validateCreateUser
+    validateCreateUser,
+    validateLoginUser
 };

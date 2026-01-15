@@ -242,3 +242,30 @@ It is meant for **internal review and interview preparation**, not for public re
 - Login and password comparison will be added later using `bcrypt.compare()`.
 
 ---
+
+## Day 12 — User Login (Authentication Phase 1)
+
+### Goal
+- Implement basic user login using email and password.
+- Verify credentials securely without tokens.
+
+### Learned
+- Login logic belongs in the service layer.
+- Password verification must use bcrypt.compare.
+- Controllers should only coordinate request and response.
+- Centralized error middleware must respect custom status codes.
+- DB constraints remain the final safeguard against race conditions.
+
+### Changes Made
+- Added login service to verify user credentials.
+- Added login controller to handle HTTP flow.
+- Added login validation middleware.
+- Wired login route under /users/login.
+- Fixed error middleware to handle custom status codes correctly.
+
+### Notes
+- JWT and session handling are intentionally deferred.
+- Model-level normalization will be handled in a later refactor.
+
+---
+
