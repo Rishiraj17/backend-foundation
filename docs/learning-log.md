@@ -363,3 +363,25 @@ It is meant for **internal review and interview preparation**, not for public re
 - DB lookup and authorization are intentionally deferred.
 
 ---
+
+## Day 16 — Auth Context & Authorization Preparation
+
+### Goal
+- Convert authenticated identity into a real user context.
+- Prepare the system for authorization logic.
+
+### Learned
+- Authentication answers “who you are”.
+- Authorization answers “what you are allowed to do”.
+- JWT alone is not enough; DB is the source of truth.
+- Auth middleware should attach full user context to req.
+
+### Changes Made
+- Updated auth middleware to load user from database.
+- Ensured deleted users cannot access protected routes.
+- Removed password field from attached user context.
+
+### Notes
+- Role-based access control will be added later.
+
+---
