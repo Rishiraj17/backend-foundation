@@ -385,3 +385,26 @@ It is meant for **internal review and interview preparation**, not for public re
 - Role-based access control will be added later.
 
 ---
+
+## Day 17 — Role-Based Authorization (RBAC)
+
+### Goal
+- Introduce roles and restrict access based on permissions.
+
+### Learned
+- Authorization is different from authentication.
+- RBAC enforces what actions a user is allowed to perform.
+- Auth context must be attached to req, not res.
+- Middleware factories enable flexible role checks.
+
+### Changes Made
+- Added role field to User model with safe defaults.
+- Implemented authorizeRoles middleware.
+- Protected an admin-only route.
+- Verified access control for user vs admin roles.
+
+### Notes
+- Role assignment flow is manual for now.
+- Fine-grained permissions will be added later.
+
+---
