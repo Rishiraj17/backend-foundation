@@ -1,6 +1,7 @@
 
 const { createUserService } = require("../services/user.service");
 const { loginUserService } = require("../services/user.service");
+const jwt =require("jsonwebtoken");
 
 const createUser = async (req, res, next)=>{
     try{
@@ -24,9 +25,15 @@ const loginUser = async (req, res, next) =>{
         
         const user=await loginUserService(email,password);
 
+        const token = jwt.sign(
+            { userId: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN }
+        );
+
         res.status(200).json({
             message:"Login successful",
-            user
+            token
         });
 
     } catch(error){

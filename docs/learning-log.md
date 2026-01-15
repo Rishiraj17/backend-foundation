@@ -289,5 +289,56 @@ It is meant for **internal review and interview preparation**, not for public re
 - Existing records are not auto-migrated.
 - Middleware normalization is intentionally retained.
 
+---
+
+## Day 14 — JWT Authentication (Token Issuance)
+
+### Goal
+- Issue a JWT on successful user login.
+- Establish the foundation for stateless authentication.
+
+### Learned
+- JWT is a signed token used to prove authentication after login.
+- Passwords are used only during login; JWT is used afterward.
+- Token generation belongs in the controller, not the service.
+- JWT payload should be minimal and never contain sensitive data.
+- Token expiry is critical for security.
+
+### Changes Made
+- Installed jsonwebtoken library.
+- Generated JWT on successful login.
+- Configured JWT secret and expiry using environment variables.
+- Returned token to client on login success.
+
+### Notes
+- Token verification and route protection are handled in the next phase.
+- Refresh tokens and cookies are intentionally deferred.
 
 ---
+
+## Day 14 — JWT Authentication (Token Issuance)
+
+### Goal
+- Issue a JWT on successful user login.
+- Establish the foundation for stateless authentication.
+
+### Learned
+- JWT is a signed token used to prove authentication after login.
+- Passwords are used only during login; JWT is used afterward.
+- Token generation belongs in the controller, not the service.
+- JWT payload should be minimal and never contain sensitive data.
+- Token expiry is critical for security.
+
+### Changes Made
+- Installed jsonwebtoken library.
+- Generated JWT on successful login.
+- Configured JWT secret and expiry using environment variables.
+- Returned token to client on login success.
+
+### Notes
+- Token verification and route protection are handled in the next phase.
+- Refresh tokens and cookies are intentionally deferred.
+
+---
+
+
