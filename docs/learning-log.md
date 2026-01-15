@@ -341,4 +341,25 @@ It is meant for **internal review and interview preparation**, not for public re
 
 ---
 
+## Day 15 — JWT Verification & Protected Routes
 
+### Goal
+- Verify JWT sent by client.
+- Protect routes from unauthenticated access.
+
+### Learned
+- Auth middleware acts as a gatekeeper before routes.
+- JWT verification checks signature and expiry.
+- Identity should be attached to req for downstream use.
+- Middleware is the correct place for cross-cutting concerns like auth.
+
+### Changes Made
+- Added JWT authentication middleware.
+- Verified tokens using jsonwebtoken.
+- Protected a sample route (/users/me).
+- Confirmed access control works with valid/invalid tokens.
+
+### Notes
+- DB lookup and authorization are intentionally deferred.
+
+---
