@@ -408,3 +408,24 @@ It is meant for **internal review and interview preparation**, not for public re
 - Fine-grained permissions will be added later.
 
 ---
+
+## Day 18 — Resource Ownership & Permission Checks
+
+### Goal
+- Enforce data-level authorization based on resource ownership.
+
+### Learned
+- Ownership authorization is different from RBAC.
+- `req.user` must always represent the authenticated actor.
+- Authorization does not imply data retrieval.
+- Admins may access any resource, but target data must be fetched explicitly.
+
+### Changes Made
+- Added reusable ownership authorization middleware.
+- Protected user routes using ownership checks.
+- Verified behavior for user vs admin access.
+
+### Notes
+- Profile data fetching for admins is deferred to the next day.
+
+---

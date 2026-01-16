@@ -4,6 +4,7 @@ const { validateCreateUser, validateLoginUser } = require("../middleware/user.va
 const router=express.Router();
 const authenticate = require("../middleware/auth.middleware");
 const authorizeRoles = require("../middleware/authorize.middleware");
+const authorizeOwnership = require("../middleware/ownership.middleware");
 
 router.post("/", validateCreateUser, createUser);
 router.post("/login",validateLoginUser,loginUser);
@@ -22,6 +23,18 @@ router.get(
     (req, res) => {
         res.status(200).json({
             message:"Admin access granted",
+            user: req.user
+        });
+    }
+);
+
+router.get(
+    "/:userId",
+    authenticate,
+    authorizeOwnership("userId"),
+    (req,res) => {
+        res.status(200).json({
+            message:"User profile access granted",
             user: req.user
         });
     }
