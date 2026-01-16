@@ -429,3 +429,24 @@ It is meant for **internal review and interview preparation**, not for public re
 - Profile data fetching for admins is deferred to the next day.
 
 ---
+
+## Day 19 — Profile Fetching & Actor vs Subject Separation
+
+### Goal
+- Return correct user profile data while preserving authorization logic.
+
+### Learned
+- `req.user` must always represent the authenticated actor.
+- Target resources (subjects) must be fetched explicitly.
+- Authorization and data retrieval are separate responsibilities.
+- Admin access does not mean returning admin data.
+
+### Changes Made
+- Updated profile route to fetch target user by ID.
+- Ensured password field is excluded from responses.
+- Verified correct behavior for user and admin access.
+
+### Notes
+- Actor vs subject separation prevents serious security bugs.
+
+---
