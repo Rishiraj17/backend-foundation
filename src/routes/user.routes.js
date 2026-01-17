@@ -132,5 +132,14 @@ router.put(
     }
 );
 
+router.post(
+    "/logout",
+    authenticate,
+    (req, res)=>{
+        res.status(200).json({
+            message:"Logged out successfully. Please delete token on client."
+        });
+    }
+);
 
 module.exports = router;

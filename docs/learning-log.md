@@ -495,3 +495,27 @@ It is meant for **internal review and interview preparation**, not for public re
 - Forgot-password and token invalidation are deferred.
 
 ---
+
+## Day 22 — Logout & JWT Reality
+
+### Goal
+- Implement logout behavior correctly in a JWT-based authentication system.
+- Understand what logout actually means when using stateless tokens.
+
+### Learned
+- JWTs are stateless and cannot be invalidated server-side without extra infrastructure.
+- “Logout” in JWT systems usually means deleting the token on the client.
+- Server-side logout endpoints should be honest and not pretend to revoke tokens.
+- Token blacklisting or refresh-token strategies are required for true revocation.
+- Not all logic needs a service layer; architecture should emerge from complexity.
+
+### Changes Made
+- Added authenticated logout endpoint.
+- Ensured logout behavior instructs client to delete token.
+- Preserved clean separation between auth, authorization, and request handling.
+
+### Notes
+- Token blacklisting and refresh-token flows are deferred.
+- No refactoring was done to avoid premature abstraction.
+
+---
