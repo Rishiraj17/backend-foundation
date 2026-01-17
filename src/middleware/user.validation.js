@@ -45,7 +45,32 @@ const validateLoginUser = (req, res, next) =>{
     next();
 };
 
+const validateUpdateUser = (req, res, next)=> {
+    const allowedFields = ["name","email"];
+    const updates = Object.keys(req.body);
+
+    const isValidOperation = updates.every((field) => allowedFields.includes(field));
+
+    if(!isValidOperation){
+        return res.status(400).json({
+            message:"Invalid update field"
+        });
+    }
+
+    //normalize if present
+    if(req.body.email){
+        req.body.email=req.body.email.trim().toLowerCase();
+    }
+
+    if(req.body.name){
+        req.body.name = req.body.name.trim();
+    }
+
+    next();
+};
+
 module.exports={
     validateCreateUser,
-    validateLoginUser
+    validateLoginUser,
+    validateUpdateUser
 };

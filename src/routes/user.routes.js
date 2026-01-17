@@ -1,6 +1,6 @@
 const express = require("express");
 const { createUser, loginUser } = require("../controllers/user.controller");
-const { validateCreateUser, validateLoginUser } = require("../middleware/user.validation");
+const { validateCreateUser, validateLoginUser, validateUpdateUser } = require("../middleware/user.validation");
 const router=express.Router();
 const authenticate = require("../middleware/auth.middleware");
 const authorizeRoles = require("../middleware/authorize.middleware");
@@ -52,5 +52,42 @@ router.get(
         }
     }
 );
+
+router.put(
+    "/:userId",
+    authenticate,
+    authorizeOwnership("userId"),
+    validateUpdateUser,
+    async (req, res, next)=>{
+        try{
+            const updates = {};
+            if(req.body.name) updates.name = req.body.name;
+            if(req.body.email) updates.email = req.body.email;
+
+            const updateUser = await User.findByIdAndUpdate(
+                req.params.userId,
+                updates,
+                {
+                    new: true,               //return updated doc
+                    runValidators: true,     //enforce schema rules
+                }
+            ).select("-password");
+
+            if(!updateUser){
+                return res.status(404).json({
+                    message: "User not found"
+                });
+            }
+
+            res.status(200).json({
+                message: "Profile update successfully",
+                user: updateUser
+            });
+        } catch(error){
+            next(error);
+        }
+    }
+);
+
 
 module.exports = router;

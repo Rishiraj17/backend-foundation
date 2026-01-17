@@ -450,3 +450,25 @@ It is meant for **internal review and interview preparation**, not for public re
 - Actor vs subject separation prevents serious security bugs.
 
 ---
+
+## Day 20 — Update Profile with Ownership & Validation
+
+### Goal
+- Allow safe profile updates while enforcing ownership and authorization.
+
+### Learned
+- Validation should restrict allowed update fields.
+- Never trust req.body directly — whitelist in controller.
+- Use defense-in-depth: validation + controller + schema.
+- PUT updates are simpler and safer early on than PATCH.
+
+### Changes Made
+- Added update validation middleware.
+- Implemented PUT profile update route.
+- Blocked sensitive field updates (role, password).
+- Verified user vs admin update behavior.
+
+### Notes
+- Password update and email verification are deferred.
+
+---
