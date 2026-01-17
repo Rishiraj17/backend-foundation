@@ -1,11 +1,12 @@
 const express = require("express");
 const { createUser, loginUser } = require("../controllers/user.controller");
-const { validateCreateUser, validateLoginUser, validateUpdateUser } = require("../middleware/user.validation");
+const { validateCreateUser, validateLoginUser, validateUpdateUser, validateChangePassword } = require("../middleware/user.validation");
 const router=express.Router();
 const authenticate = require("../middleware/auth.middleware");
 const authorizeRoles = require("../middleware/authorize.middleware");
 const authorizeOwnership = require("../middleware/ownership.middleware");
 const User = require("../models/user.model");
+const bcrypt = require("bcrypt");
 
 router.post("/", validateCreateUser, createUser);
 router.post("/login",validateLoginUser,loginUser);
@@ -84,6 +85,48 @@ router.put(
                 user: updateUser
             });
         } catch(error){
+            next(error);
+        }
+    }
+);
+
+router.put(
+    "/:userId/change-password",
+    authenticate,
+    authorizeOwnership("userId"),
+    validateChangePassword,
+    async (req, res, next) =>{
+        try{
+            const { oldPassword, newPassword } = req.body;
+
+            //fetch target user (subject)
+            const user = await User.findById(req.params.userId);
+
+            if(!user){
+                return res.status(404).json({
+                    message:"User not found"
+                });
+            }
+
+            //verify old password
+            const isMatch = await bcrypt.compare(oldPassword,user.password);
+
+            if(!isMatch){
+                return res.status(401).json({
+                    message:"Old password is incorrect"
+                });
+            }
+
+            //hash new password
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+            user.password = hashedPassword;
+            await user.save();
+
+            return res.status(200).json({
+                message:"Password changed successfully"
+            });
+        }catch (error){
             next(error);
         }
     }

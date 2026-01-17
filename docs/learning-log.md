@@ -472,3 +472,26 @@ It is meant for **internal review and interview preparation**, not for public re
 - Password update and email verification are deferred.
 
 ---
+
+## Day 21 — Secure Password Change Flow
+
+### Goal
+- Allow authenticated users to change their own password securely.
+
+### Learned
+- Password change is a high-risk operation and must be tightly controlled.
+- Authorization allows who may attempt an action; business logic determines whether it can succeed.
+- Admins are not explicitly blocked from password change routes, but cannot complete them without knowing the current password.
+- Sensitive actions should rely on proof (old password), not only roles.
+
+### Changes Made
+- Added password change validation middleware.
+- Implemented secure password change route using bcrypt.
+- Enforced ownership checks for password updates.
+- Required old password verification before updating.
+
+### Notes
+- Admin password reset should be a separate, explicit flow.
+- Forgot-password and token invalidation are deferred.
+
+---

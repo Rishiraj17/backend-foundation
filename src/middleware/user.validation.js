@@ -69,8 +69,27 @@ const validateUpdateUser = (req, res, next)=> {
     next();
 };
 
+const validateChangePassword = (req, res, next) =>{
+    const { oldPassword, newPassword} = req.body;
+
+    if(!oldPassword || !newPassword){
+        return res.status(400).json({
+            message:"Old password and new password is required"
+        });
+    }
+
+    if(newPassword.length < 8){
+        return res.status(400).json({
+            message:"New Password must be at least 8 characters long"
+        });
+    }
+
+    next();
+}
+
 module.exports={
     validateCreateUser,
     validateLoginUser,
-    validateUpdateUser
+    validateUpdateUser,
+    validateChangePassword
 };
