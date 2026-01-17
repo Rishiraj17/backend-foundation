@@ -519,3 +519,27 @@ It is meant for **internal review and interview preparation**, not for public re
 - No refactoring was done to avoid premature abstraction.
 
 ---
+
+## Day 23 — Architectural Judgment: Controllers vs Services
+
+### Goal
+- Decide when to introduce services without overengineering.
+- Understand why some logic belongs in routes/controllers.
+
+### Learned
+- Not all logic is business/domain logic.
+- Services should be introduced only when logic is reused or domain-heavy.
+- Middleware is ideal for cross-cutting concerns (auth, validation, ownership).
+- Route handlers can safely contain simple, single-use orchestration logic.
+- Premature abstraction leads to fake architecture.
+
+### Decisions Made
+- No service extraction was done.
+- Existing structure was intentionally preserved.
+- Service layer remains limited to truly reusable domain logic.
+
+### Notes
+- Password change may become a service later if reused.
+- Architecture should emerge from complexity, not anticipation.
+
+---
