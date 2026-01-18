@@ -25,15 +25,22 @@ const loginUser = async (req, res, next) =>{
         
         const user=await loginUserService(email,password);
 
-        const token = jwt.sign(
+        const accessToken = jwt.sign(
             { userId: user._id },
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN }
+            process.env.JWT_ACCESS_SECRET,
+            { expiresIn: "15m" }
+        );
+
+        const refreshToken = jwt.sign(
+            { userId: user._id },
+            process.env.JWT_REFRESH_SECRET,
+            { expiresIn: "7d"}
         );
 
         res.status(200).json({
             message:"Login successful",
-            token
+            accessToken,
+            refreshToken
         });
 
     } catch(error){

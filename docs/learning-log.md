@@ -543,3 +543,28 @@ It is meant for **internal review and interview preparation**, not for public re
 - Architecture should emerge from complexity, not anticipation.
 
 ---
+
+## Day 24 — Access & Refresh Token Authentication
+
+### Goal
+- Improve JWT authentication by introducing refresh tokens.
+- Solve limitations of stateless logout and short-lived access tokens.
+
+### Learned
+- Access tokens should be short-lived and used for API access.
+- Refresh tokens are used only to obtain new access tokens.
+- Refresh token endpoints must be public and should not use auth middleware.
+- Separate secrets for access and refresh tokens improve security.
+- Small typos in JWT logic can cause misleading auth errors.
+
+### Changes Made
+- Updated login flow to issue access and refresh tokens.
+- Updated auth middleware to verify access tokens only.
+- Added refresh-token endpoint to issue new access tokens.
+- Verified full token lifecycle end-to-end.
+
+### Notes
+- Refresh token storage and revocation are deferred.
+- Cookie-based refresh tokens can be added later.
+
+---

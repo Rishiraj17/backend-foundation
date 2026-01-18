@@ -7,9 +7,48 @@ const authorizeRoles = require("../middleware/authorize.middleware");
 const authorizeOwnership = require("../middleware/ownership.middleware");
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 router.post("/", validateCreateUser, createUser);
 router.post("/login",validateLoginUser,loginUser);
+
+router.post(
+    "/refresh-token",
+    async (req, res)=>{
+        const { refreshToken } = req.body;
+
+        if(!refreshToken){
+            return res.status(401).json({
+                message:"Refresh token required"
+            });
+        }
+        // console.log("Refresh token:", refreshToken);
+        // console.log("Using secret:", process.env.JWT_REFRESH_SECRET);
+        try{
+            const decoded=jwt.verify(
+                refreshToken,
+                process.env.JWT_REFRESH_SECRET
+            );
+
+            const newAccessToken = jwt.sign(
+                { userId: decoded.userId },
+                process.env.JWT_ACCESS_SECRET,
+                { expiresIn: "15m" }
+            );
+            
+            res.status(200).json({
+                accessToken: newAccessToken
+            });
+            
+
+        }catch(error){
+            // console.log(error);
+            return res.status(401).json({
+                message:"Invalid or expired refresh token"
+            });
+        }
+    }
+);
 
 router.get("/me",authenticate,(req,res)=>{
     res.status(200).json({
@@ -141,5 +180,6 @@ router.post(
         });
     }
 );
+
 
 module.exports = router;
