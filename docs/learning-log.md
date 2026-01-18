@@ -604,3 +604,29 @@ It is meant for **internal review and interview preparation**, not for public re
 - Auth hardening or system design interview prep
 
 ---
+
+## Day 26 — Rate Limiting for Auth Endpoints
+
+### Goal
+- Protect authentication-related endpoints from brute-force and abuse.
+- Apply security controls only where risk is highest.
+
+### Learned
+- Rate limiting is a defense-in-depth measure, not a replacement for auth.
+- Login and refresh-token endpoints are the highest-risk routes.
+- Targeted rate limiting is better than global throttling early on.
+- In-memory limiters are acceptable for learning but reset on server restart.
+
+### Changes Made
+- Added express-rate-limit middleware.
+- Applied rate limiting to:
+  - POST /login
+  - POST /refresh-token
+- Configured conservative limits (5 requests per 15 minutes).
+
+### Notes
+- Redis-backed rate limiting can be added for production.
+- Per-IP and per-user strategies were intentionally deferred.
+
+---
+

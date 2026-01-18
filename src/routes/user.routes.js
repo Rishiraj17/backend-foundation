@@ -8,12 +8,14 @@ const authorizeOwnership = require("../middleware/ownership.middleware");
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { authLimiter } = require("../middleware/rateLimit.middleware");
 
 router.post("/", validateCreateUser, createUser);
-router.post("/login",validateLoginUser,loginUser);
+router.post("/login",authLimiter,validateLoginUser,loginUser);
 
 router.post(
     "/refresh-token",
+    authLimiter,
     async (req, res)=>{
         const { refreshToken } = req.body;
 
