@@ -9,6 +9,7 @@ const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { authLimiter } = require("../middleware/rateLimit.middleware");
+const { auditLog } = require("../utils/auditLogger");
 
 router.post("/", validateCreateUser, createUser);
 router.post("/login",authLimiter,validateLoginUser,loginUser);
@@ -163,6 +164,12 @@ router.put(
 
             user.password = hashedPassword;
             await user.save();
+            
+            auditLog({
+                userId: user.id,
+                action: "PASSWORD_CHANGED",
+                req
+            });
 
             return res.status(200).json({
                 message:"Password changed successfully"

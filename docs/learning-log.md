@@ -630,3 +630,28 @@ It is meant for **internal review and interview preparation**, not for public re
 
 ---
 
+## Day 27 — Audit Logging for Security Events
+
+### Goal
+- Add basic audit logging for security-sensitive actions.
+- Record who did what and when for authentication-related events.
+
+### Learned
+- Audit logs should be placed where decisions are made.
+- Login failure decisions live in the service layer, not controllers.
+- Controllers should log only after successful orchestration.
+- Audit logs differ from error logs and normal application logs.
+
+### Changes Made
+- Added audit logger utility under utils/.
+- Logged LOGIN_SUCCESS after successful authentication.
+- Logged LOGIN_FAILED inside login service for:
+  - email not found
+  - incorrect password
+- Logged PASSWORD_CHANGED after successful password update.
+
+### Notes
+- Audit logs currently write to console only.
+- Persistence (DB / external logging) can be added later if required.
+
+---
