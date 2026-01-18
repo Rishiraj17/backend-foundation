@@ -568,3 +568,39 @@ It is meant for **internal review and interview preparation**, not for public re
 - Cookie-based refresh tokens can be added later.
 
 ---
+
+## Day 25 — Refresh Token Storage, Rotation & Revocation (Concept Only)
+
+### Goal
+- Understand why refresh tokens alone are not sufficient for production security.
+- Learn how real systems use storage, rotation, and revocation to secure sessions.
+
+### Learned
+- Access tokens are short-lived and used for API access.
+- Refresh tokens are long-lived and used only to obtain new access tokens.
+- If refresh tokens are not stored server-side, they cannot be revoked.
+- Stealing a refresh token without rotation allows minting new access tokens.
+- Real-world systems store hashed refresh tokens and rotate them on each use.
+- Rotation ensures refresh tokens are single-use and prevents replay attacks.
+
+### Security Model
+- Access token:
+  - Short TTL
+  - High exposure (sent on every request)
+- Refresh token:
+  - Long TTL
+  - Rarely used
+  - Must be stored and controlled server-side in production
+
+### Decisions Made
+- Refresh token storage and rotation were intentionally deferred.
+- Current implementation is acceptable for learning and interview discussion.
+- Full implementation will be revisited during auth hardening or production-readiness phase.
+
+### Revisit Triggers
+- Moving refresh tokens to HTTP-only cookies
+- Implementing logout-all-sessions
+- Password change invalidating sessions
+- Auth hardening or system design interview prep
+
+---
