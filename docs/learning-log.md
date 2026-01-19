@@ -655,3 +655,26 @@ It is meant for **internal review and interview preparation**, not for public re
 - Persistence (DB / external logging) can be added later if required.
 
 ---
+
+## Day 28 — Input Sanitization & Data Normalization
+
+### Goal
+- Harden the backend against common injection and malformed-input risks.
+- Ensure consistent data storage through normalization.
+
+### Learned
+- Validation checks correctness; sanitization makes input safe.
+- Middleware order in Express is critical for security.
+- Sanitization must happen before routes; error handlers must be last.
+- Model-level normalization ensures consistency across create and update flows.
+
+### Changes Made
+- Added express-mongo-sanitize middleware.
+- Placed sanitization middleware before all routes.
+- Verified model-level normalization for email (lowercase, trim) and name (trim).
+
+### Notes
+- XSS protection and security headers are deferred.
+- Existing validation middleware continues to handle shape and constraints.
+
+---
