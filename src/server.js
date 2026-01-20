@@ -4,7 +4,9 @@ require("dotenv").config();
 const connectDB= require("./config/db");
 const userRoutes=require("./routes/user.routes");
 const errorHandler=require("./middleware/error.middleware");
-const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
+const morgan = require("morgan")
+const sanitizeBody = require("./middleware/sanitize.middleware");
 
 const app = express();
 
@@ -14,8 +16,12 @@ const PORT=process.env.PORT || 5000;
 //middleware to parse JSON
 app.use(express.json());
 
-// sanatize input
-app.use(mongoSanitize());
+app.use(sanitizeBody);
+
+app.use(helmet());
+
+//status
+app.use(morgan("dev"));
 
 //routes
 app.use("/users",userRoutes);

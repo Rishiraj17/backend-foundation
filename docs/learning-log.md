@@ -678,3 +678,28 @@ It is meant for **internal review and interview preparation**, not for public re
 - Existing validation middleware continues to handle shape and constraints.
 
 ---
+
+## Day 29 — Security Headers, Logging & Input Sanitization
+
+### Goal
+- Improve backend security and observability.
+- Protect against injection attacks and improve debugging visibility.
+
+### Learned
+- Input sanitization removes dangerous object keys, not string values.
+- MongoDB operator injection relies on `$` and `.` in object keys.
+- Middleware order is critical for security correctness.
+- Some security libraries may break with newer Node/Express versions.
+
+### Changes Made
+- Replaced express-mongo-sanitize with a custom body sanitizer.
+- Sanitizer removes keys starting with `$` or containing `.` from req.body.
+- Added Helmet to apply standard security HTTP headers.
+- Added Morgan for request-level logging in development.
+
+### Notes
+- Sanitization is applied before routes.
+- Validation and normalization still handle input correctness.
+- Query and param sanitization can be added later if required.
+
+---
