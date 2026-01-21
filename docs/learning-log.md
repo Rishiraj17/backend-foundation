@@ -777,3 +777,80 @@ Key rule enforced:
 - No premature optimizations added
 
 ---
+# Day 31 — Sorting & Safe Query Whitelisting
+
+## What was implemented
+- Added **controlled sorting** to the admin user listing endpoint.
+- Sorting is handled via query params:
+  - `sortBy`
+  - `order` (asc / desc)
+- Sorting is restricted using an **allowlist** of safe fields.
+
+---
+
+## Why this was needed
+- Pagination and filtering are incomplete without predictable ordering.
+- Allowing unrestricted sorting (`req.query.sort`) is unsafe.
+- Sorting must not expose sensitive fields or harm DB performance.
+
+---
+
+## Core concepts learned
+
+### Safe sorting
+- Clients can request sorting, but the server decides what is allowed.
+- Only explicitly permitted fields are sortable.
+- Invalid or unknown fields fall back to a safe default.
+
+Example approach:
+- Allowed fields: `createdAt`, `name`, `email`, `role`
+- Default sort: `createdAt DESC`
+
+---
+
+### Sort direction control
+- `order=asc` → ascending
+- any other value → descending (safe default)
+- Prevents invalid inputs from breaking queries
+
+---
+
+## Query whitelisting (security principle)
+- Never trust raw `req.query` directly in database queries.
+- Only extract known fields and ignore the rest.
+- Filtering logic already follows this pattern by manually building a query object.
+
+This prevents:
+- Mongo operator injection (`$ne`, `$gt`, `$where`)
+- Unexpected query behavior
+- Performance abuse
+
+---
+
+## Design decisions
+- Sorting is implemented only on **collection routes**.
+- Sorting logic is colocated with pagination logic for clarity.
+- No regex, multi-field sorting, or search added prematurely.
+
+---
+
+## What was intentionally skipped
+- Cursor-based pagination
+- Text search
+- Compound sorting
+- Index tuning
+
+These are deferred until there is a real need.
+
+---
+
+## Interview-ready takeaway
+> “I implemented server-controlled sorting using an allowlist to prevent unsafe queries, combined it with pagination and filtering, and ensured all query parameters are explicitly validated before reaching the database.”
+
+---
+
+## Status
+- Sorting working with safe defaults
+- No security regressions
+- API behavior remains predictable
+---

@@ -11,6 +11,8 @@ const jwt = require("jsonwebtoken");
 const { authLimiter } = require("../middleware/rateLimit.middleware");
 const { auditLog } = require("../utils/auditLogger");
 
+
+//==================================================================================================
 // AUTH ROUTES
 
 // Create a new user account
@@ -70,7 +72,32 @@ router.post(
     }
 );
 
+//=================================================================================
+//AUTHENTICATED USER CONTEXT
+
+// Get currently logged-in user
+router.get("/me",authenticate,(req,res)=>{
+    res.status(200).json({
+        message:"Access granted",
+        user:req.user
+    });
+});
+
+//================================================================================================
 // ADMIN ROUTES (COLLECTION ACCESS)
+
+// Test admin access (diagnostic)
+router.get(
+    "/admin-test",
+    authenticate,
+    authorizeRoles("admin"),
+    (req, res) => {
+        res.status(200).json({
+            message:"Admin access granted",
+            user: req.user
+        });
+    }
+);
 
 // Get Pagination & filture list of users (admin only)
 router.get(
@@ -84,6 +111,17 @@ router.get(
 
             const skip = (page-1)*limit;
             
+            const allowedSortFields = ["createdAt","name","email","role"];
+
+            let sortField = req.query.sortBy || "createdAt";
+            let sortOrder = req.query.order === 'asc' ? 1 : -1;
+
+            if(!allowedSortFields.includes(sortField)){
+                sortField = "createdAt";
+            }
+
+            const sort = { [sortField]: sortOrder };
+
             const query = {};
 
             if(req.query.role){
@@ -95,6 +133,7 @@ router.get(
             }
 
             const users = await User.find(query)
+                .sort(sort)
                 .skip(skip)
                 .limit(limit)
                 .select("-password");
@@ -113,25 +152,7 @@ router.get(
     }
 );
 
-router.get("/me",authenticate,(req,res)=>{
-    res.status(200).json({
-        message:"Access granted",
-        user:req.user
-    });
-});
-
-router.get(
-    "/admin-test",
-    authenticate,
-    authorizeRoles("admin"),
-    (req, res) => {
-        res.status(200).json({
-            message:"Admin access granted",
-            user: req.user
-        });
-    }
-);
-
+//===============================================================================================
 // USER PROFILE ROUTES (OWNERSHIP)
 
 // Get user profile (self or admin)
@@ -196,6 +217,7 @@ router.put(
     }
 );
 
+//=============================================================================================
 // ACCOUNT SECURITY ROUTES
 
 // Change password (self or admin)
