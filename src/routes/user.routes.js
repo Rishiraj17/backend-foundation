@@ -11,9 +11,15 @@ const jwt = require("jsonwebtoken");
 const { authLimiter } = require("../middleware/rateLimit.middleware");
 const { auditLog } = require("../utils/auditLogger");
 
+// AUTH ROUTES
+
+// Create a new user account
 router.post("/", validateCreateUser, createUser);
+
+// Login user and issue tokens
 router.post("/login",authLimiter,validateLoginUser,loginUser);
 
+// Refresh access token using refresh token
 router.post(
     "/refresh-token",
     authLimiter,
@@ -53,6 +59,60 @@ router.post(
     }
 );
 
+// Logout (client-side token discard)
+router.post(
+    "/logout",
+    authenticate,
+    (req, res)=>{
+        res.status(200).json({
+            message:"Logged out successfully. Please delete token on client."
+        });
+    }
+);
+
+// ADMIN ROUTES (COLLECTION ACCESS)
+
+// Get Pagination & filture list of users (admin only)
+router.get(
+    "/",
+    authenticate,
+    authorizeRoles("admin"),
+    async (req, res, next)=>{
+        try{
+            const page = parseInt(req.query.page)||1;
+            const limit = parseInt(req.query.limit)||10;
+
+            const skip = (page-1)*limit;
+            
+            const query = {};
+
+            if(req.query.role){
+                query.role=req.query.role;
+            }
+
+            if(req.query.email){
+                query.email=req.query.email.toLowerCase();
+            }
+
+            const users = await User.find(query)
+                .skip(skip)
+                .limit(limit)
+                .select("-password");
+
+            const totalUsers = await User.countDocuments(query);
+
+            res.status(200).json({
+                page,
+                limit,
+                totalUsers,
+                users
+            });
+        }catch(error){
+            next(error);
+        }
+    }
+);
+
 router.get("/me",authenticate,(req,res)=>{
     res.status(200).json({
         message:"Access granted",
@@ -72,6 +132,9 @@ router.get(
     }
 );
 
+// USER PROFILE ROUTES (OWNERSHIP)
+
+// Get user profile (self or admin)
 router.get(
     "/:userId",
     authenticate,
@@ -96,6 +159,7 @@ router.get(
     }
 );
 
+// Update user profile (self or admin)
 router.put(
     "/:userId",
     authenticate,
@@ -132,6 +196,9 @@ router.put(
     }
 );
 
+// ACCOUNT SECURITY ROUTES
+
+// Change password (self or admin)
 router.put(
     "/:userId/change-password",
     authenticate,
@@ -180,15 +247,7 @@ router.put(
     }
 );
 
-router.post(
-    "/logout",
-    authenticate,
-    (req, res)=>{
-        res.status(200).json({
-            message:"Logged out successfully. Please delete token on client."
-        });
-    }
-);
+
 
 
 module.exports = router;

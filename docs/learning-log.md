@@ -703,3 +703,77 @@ It is meant for **internal review and interview preparation**, not for public re
 - Query and param sanitization can be added later if required.
 
 ---
+
+## Day 30 — Pagination, Filtering & Route Organization
+
+### What was implemented
+- Added **admin-only user listing** endpoint using the existing `/users` route.
+- Implemented **pagination** using `page` and `limit` query parameters.
+- Added **basic filtering** via query params (`role`, `email`).
+- Reorganized routes by **intent and access level** with clear comments.
+
+### Why this was needed
+- Returning all users at once does not scale.
+- Pagination prevents performance issues as data grows.
+- Filtering avoids creating multiple rigid endpoints.
+- Route grouping reduces cognitive load and improves maintainability.
+
+### Core concepts learned
+
+--> Pagination
+- Implemented using: skip = (page - 1) * limit
+- Pagination logic must be consistent between:
+- `find()` (data fetch)
+- `countDocuments()` (total count)
+
+--> Filtering
+- Query params are converted into a MongoDB query object.
+- Same query object is reused for:
+- fetching paginated data
+- counting total documents
+- This prevents pagination mismatch bugs.
+
+--> Input normalization pitfall
+- If `limit` is missing or invalid:
+- `parseInt(req.query.limit)` → `NaN`
+- default value can cause unexpected `skip`
+- Debugging confirmed incorrect pagination was due to default `limit` behavior, not MongoDB.
+
+### Route organization decisions
+Routes were grouped by **responsibility**, not by creation order:
+
+- **Auth & token lifecycle**
+- register, login, refresh-token, logout
+- **Authenticated user context**
+- `/me`
+- **Admin-only routes**
+- user collection listing (pagination + filtering)
+- admin diagnostic routes
+- **Ownership-based routes**
+- `/users/:userId`
+- **Account security**
+- password change
+
+Key rule enforced:
+> Static collection routes must be defined **before** dynamic routes (`/:userId`) to avoid route swallowing.
+
+### Important clarifications
+- `/me` is an **auth-context route**, not ownership-based.
+- Ownership checks apply only when accessing a resource by `userId`.
+- Filtering and pagination belong only to **collection routes**, not single-resource routes.
+
+### Bugs / pitfalls encountered
+- Pagination returned empty results due to incorrect `limit` default.
+- Route order issues can silently break collection endpoints.
+- Count mismatch occurs if `countDocuments()` does not use the same query as `find()`.
+
+### Interview-ready takeaway
+> “I implemented admin-only paginated and filtered collection routes, ensured query consistency between data fetch and count, handled pagination edge cases, and organized routes by access level to avoid Express route-matching pitfalls.”
+
+### Status
+- Pagination working
+- Filtering working
+- Routes grouped and commented
+- No premature optimizations added
+
+---
