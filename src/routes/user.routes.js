@@ -141,10 +141,14 @@ router.get(
             const totalUsers = await User.countDocuments(query);
 
             res.status(200).json({
-                page,
-                limit,
-                totalUsers,
-                users
+                success: true,
+                message: "Users fetched successfully",
+                data: {
+                    page,
+                    limit,
+                    totalUsers,
+                    users
+                }
             });
         }catch(error){
             next(error);

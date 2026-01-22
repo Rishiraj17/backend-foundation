@@ -45,9 +45,12 @@ const loginUser = async (req, res, next) =>{
         });
 
         res.status(200).json({
+            success: true,
             message:"Login successful",
-            accessToken,
-            refreshToken
+            data: {
+                accessToken,
+                refreshToken
+            }
         });
 
     } catch(error){
