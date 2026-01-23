@@ -2,6 +2,7 @@
 const { createUserService } = require("../services/user.service");
 const { loginUserService } = require("../services/user.service");
 const { auditLog } = require("../utils/auditLogger");
+const { sendSuccess } = require("../utils/response");
 const jwt =require("jsonwebtoken");
 
 const createUser = async (req, res, next)=>{
@@ -44,14 +45,12 @@ const loginUser = async (req, res, next) =>{
             req
         });
 
-        res.status(200).json({
-            success: true,
-            message:"Login successful",
-            data: {
-                accessToken,
-                refreshToken
-            }
-        });
+        sendSuccess(
+            res,
+            200,
+            "Login successful",
+            { accessToken, refreshToken }
+        );
 
     } catch(error){
         next(error);
