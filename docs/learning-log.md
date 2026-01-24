@@ -961,3 +961,71 @@ Standardizing API responses using centralized response utilities.
 - No regression in existing behavior
 
 ---
+
+# Day 35 — Introduced Service Layer for Admin List
+
+## What we did
+- Created a dedicated service for the admin users list
+- Moved all query-building and database logic from controller to service:
+  - pagination
+  - sorting validation
+  - filtering
+  - MongoDB queries
+- Slimmed the controller to:
+  - read request parameters
+  - call the service
+  - return response via `sendSuccess`
+- Preserved existing behavior and response shape
+
+## Why we did it
+- After Day 34, controllers were standardized for response handling
+- The admin list controller was still doing heavy business logic
+- This indicated justified pressure for a service layer
+- Introducing the service here improves:
+  - separation of concerns
+  - readability
+  - testability
+  - interview explainability
+
+## What went wrong
+- No functional issues encountered
+- Main risk was accidental behavior change while moving logic
+
+## How we fixed / avoided issues
+- Performed a direct logic move without refactoring
+- Kept parameter defaults and query rules identical
+- Verified endpoint behavior after migration
+
+---
+
+# Day 36 — Defensive Validation in Service Layer
+
+## What we did
+- Added service-level validation to the admin list service
+- Introduced explicit guards for:
+  - pagination (`page`, `limit`)
+  - sort order (`order`)
+  - sort field (`sortBy`)
+- Threw meaningful errors from the service with proper HTTP status codes
+- Let all errors propagate naturally to the central error middleware
+
+## Why we did it
+- After introducing a service layer (Day 35), the service must not blindly trust inputs
+- Controllers may validate, but services should still defend themselves
+- Silent fallbacks hide bugs and make systems unpredictable
+- Explicit failures improve:
+  - reliability
+  - debuggability
+  - interview explanation quality
+
+## What went wrong
+- Initially, invalid `sortBy` values were silently defaulted
+- This could hide client-side bugs and produce unexpected behavior
+
+## How we fixed it
+- Switched from silent correction to fail-fast validation
+- Rejected invalid inputs with clear error messages and status codes
+- Kept behavior unchanged for valid requests
+- Avoided adding validation libraries or premature abstractions
+
+---
