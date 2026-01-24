@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const AppError = require("../utils/appError");
 
 const getAdminUsers = async ({
     page = 1,
@@ -9,16 +10,12 @@ const getAdminUsers = async ({
     email
 }) =>{
     
-    if(page<=0 || limit <= 0){
-        const error = new Error("Page and limit must be positive numbers.");
-        error.statusCode = 400;
-        throw error;
+    if(page<0 || limit < 0){
+        throw new AppError("Page and limit must be positive numbers", 400);
     }     
 
     if(order && !["asc","desc"].includes(order)){
-        const error = new Error("Order must be either 'asc' or 'desc'");
-        error.statusCode = 400;
-        throw error;
+        throw new AppError("Order must be either 'asc' or 'desc'",400);
     }
 
     const skip = (page-1)*limit;
@@ -27,9 +24,10 @@ const getAdminUsers = async ({
 
     // let sortField = allowedSortFields.includes(sortBy) ? sortBy : "createdAt";
     if(sortBy && !allowedSortFields.includes(sortBy)){
-        const error = new Error(`Invalid sortBy field. Allowed fields: ${allowedSortFields.join(", ")}`);
-        error.statusCode = 400;
-        throw error;
+        throw new AppError(
+            `Invalid sortBy field. Allowed fields: ${allowedSortFields.join(", ")}`,
+            400
+        );
     }
 
     let sortOrder = order === 'asc' ? 1 : -1;

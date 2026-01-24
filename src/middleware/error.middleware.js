@@ -11,9 +11,12 @@ const errorHandler = (err,req,res,next)=>{
         );
     }
 
+    //Operational erros are expected (validation, auth, etc.)
+    //Non-operational errors indicate bugs or system failures
+
     //default server error
     const statusCode = err.statusCode || 500;
-    const message = err.message || "Internal server error";
+    const message = err.isOperational === true ? err.message : "Internal server error";
     
     sendError(
         res,

@@ -1029,3 +1029,29 @@ Standardizing API responses using centralized response utilities.
 - Avoided adding validation libraries or premature abstractions
 
 ---
+
+# Day 37 — Introduced Custom Application Error Handling
+
+## What we did
+- Introduced a custom `AppError` class to represent expected (operational) errors
+- Replaced ad-hoc `Error + statusCode` patterns in the admin service with `AppError`
+- Updated the central error middleware to recognize `isOperational` errors
+- Preserved existing external behavior and response format
+
+## Why we did it
+- Manually attaching `statusCode` to errors is error-prone and inconsistent
+- Services need a clear, intentional way to express validation and business errors
+- Distinguishing expected errors from bugs is a core backend engineering concept
+- This improves clarity, safety, and interview explanation without overengineering
+
+## What went wrong
+- Earlier, all errors looked the same (validation, misuse, bugs)
+- It was easy to forget `statusCode`, leading to incorrect 500 responses
+
+## How we fixed it
+- Centralized error creation using `AppError(message, statusCode)`
+- Marked expected errors with `isOperational = true`
+- Ensured error middleware handles operational and non-operational errors differently
+- Kept controllers unchanged and error flow consistent
+
+---
