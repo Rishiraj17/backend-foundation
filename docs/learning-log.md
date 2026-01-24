@@ -927,3 +927,37 @@ These are deferred until there is a real need.
   "data": { ... }
 }
 ---
+# Day 34 — Response Utilities Integration
+
+## Focus
+Standardizing API responses using centralized response utilities.
+
+## What was done
+- Extracted admin list logic into a dedicated controller
+- Router now only wires:
+  - authentication
+  - role authorization
+  - controller handler
+- Replaced manual success responses with `sendSuccess`
+- Integrated `sendError` into the central error middleware
+- Preserved MongoDB duplicate key error handling
+- Intentionally avoided service abstraction
+
+## Why this day mattered
+- Established a single source of truth for API responses
+- Removed response formatting responsibility from controllers
+- Improved separation of concerns without overengineering
+- Strengthened architectural clarity for interviews
+
+## Design decisions
+- Controllers introduced only when response consistency became a cross-cutting concern
+- Services postponed until reuse or testing pressure appears
+- Pagination metadata kept inside `data` to align with existing response utility design
+
+## DONE criteria
+- Consistent success responses via `sendSuccess`
+- Consistent error responses via `sendError`
+- Centralized error formatting
+- No regression in existing behavior
+
+---
