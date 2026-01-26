@@ -4,9 +4,12 @@ const { auditLog } = require("../utils/auditLogger");
 
 const getAllUsers = async (req, res, next ) =>{
     try{
+        const page = req.query.page === undefined ? 1 : Number(req.query.page);
+        const limit = req.query.limit === undefined ? 10 : Number(req.query.limit);
+
         const result = await getAdminUsers({
-            page : parseInt(req.query.page) || 1,
-            limit : parseInt(req.query.limit) || 10,
+            page,
+            limit,
             sortBy : req.query.sortBy,
             order : req.query.order,
             role : req.query.role,

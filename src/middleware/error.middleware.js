@@ -17,12 +17,13 @@ const errorHandler = (err,req,res,next)=>{
     //default server error
     const statusCode = err.statusCode || 500;
     const message = err.isOperational === true ? err.message : "Internal server error";
-    
+    const isDev = process.env.NODE_ENV === undefined || process.env.NODE_ENV === "development";
+
     sendError(
         res,
         statusCode,
         message,
-        process.env.NODE_ENV === "development" ? err.stack : null
+         isDev ? err.stack : null
     );
 };
 

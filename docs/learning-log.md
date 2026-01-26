@@ -1088,3 +1088,36 @@ Standardizing API responses using centralized response utilities.
 - This behavior is acceptable for now and will be addressed in a dedicated environment-configuration task later
 
 ---
+
+# Day 39 — Heavy Stabilization & Hardening
+
+## What we did
+- Enforced strict query parsing in controllers using `Number()`
+- Applied defaults only when parameters are absent
+- Strengthened service-level validation to explicitly reject:
+  - `NaN`
+  - zero or negative values
+- Fixed runtime bugs caused by undefined variables and parsing mistakes
+- Made environment behavior explicit by defaulting to development mode
+- Reviewed and aligned controller, service, and error-handling responsibilities
+
+## Why we did it
+- Silent fallbacks hide bugs and create unpredictable behavior
+- Validation logic must be explicit and consistent across layers
+- Development assumptions (like `NODE_ENV`) should never be implicit
+- A stabilization pass prevents technical debt from accumulating
+
+## What went wrong
+- Undefined variables (`sortField`) caused valid requests to crash
+- `NaN` values bypassed numeric validation
+- Controller parsing logic allowed subtle inconsistencies
+- Error behavior depended on an unset environment variable
+
+## How we fixed it
+- Traced errors using stack traces to locate true failure points
+- Corrected parsing logic and variable usage
+- Introduced finite-number checks in services
+- Made environment handling explicit and predictable
+- Locked design decisions instead of patching symptoms
+
+---

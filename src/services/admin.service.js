@@ -10,7 +10,7 @@ const getAdminUsers = async ({
     email
 }) =>{
     
-    if(page <= 0 || limit <= 0){
+    if(!Number.isFinite(page) || !Number.isFinite(limit) || page <= 0 || limit <= 0){
         throw new AppError("Page and limit must be positive numbers", 400);
     }     
 
