@@ -2,6 +2,11 @@ const { sendSuccess } = require("../utils/response");
 const { getAdminUsers } = require("../services/admin.service");
 const { auditLog } = require("../utils/auditLogger");
 
+// Controller responsibility:
+// - Parse and default request input
+// - delegate business logic to service
+// - format success response
+
 const getAllUsers = async (req, res, next ) =>{
     try{
         const page = req.query.page === undefined ? 1 : Number(req.query.page);

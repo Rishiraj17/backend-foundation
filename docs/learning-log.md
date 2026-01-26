@@ -1121,3 +1121,29 @@ Standardizing API responses using centralized response utilities.
 - Locked design decisions instead of patching symptoms
 
 ---
+
+# Day 40 — Layer Clarity & Mental Anchors
+
+## What we did
+- Added clear responsibility comments at key architectural boundaries:
+  - Admin controller
+  - Admin service
+- No logic or behavior changes were made
+
+## Why we did it
+- Late-night work should reduce future cognitive load, not increase it
+- Clear responsibility boundaries make the code easier to:
+  - resume after breaks
+  - explain during interviews
+  - reason about when debugging
+- Small clarity improvements help maintain long-term momentum
+
+## What went wrong
+- Nothing functionally broke
+- This day was intentionally kept light to avoid fatigue-induced mistakes
+
+## How we fixed / improved things
+- Documented *why* each layer exists directly in code
+- Anchored controller vs service responsibilities explicitly
+
+---

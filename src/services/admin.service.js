@@ -1,6 +1,12 @@
 const User = require("../models/user.model");
 const AppError = require("../utils/appError");
 
+// Service responsibility:
+// - enforce business rules
+// - validate inputs
+// - interact with database
+// - throw meaningful operational errors
+
 const getAdminUsers = async ({
     page = 1,
     limit = 10,
