@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const AppError = require("../utils/appError");
+const { buildPaginationAndSort } = require("../utils/queryBuilder");
 
 // Service responsibility:
 // - enforce business rules
@@ -24,7 +25,7 @@ const getAdminUsers = async ({
         throw new AppError("Order must be either 'asc' or 'desc'",400);
     }
 
-    const skip = (page-1)*limit;
+    // const skip = (page-1)*limit;
             
     const allowedSortFields = ["createdAt","name","email","role"];
 
@@ -35,11 +36,11 @@ const getAdminUsers = async ({
         );
     }
 
-    let sortField = sortBy || "createdAt";
-    let sortOrder = order === 'asc' ? 1 : -1;
+    // let sortField = sortBy || "createdAt";
+    // let sortOrder = order === 'asc' ? 1 : -1;
 
     
-    const sort = { [sortField]: sortOrder };
+    // const sort = { [sortField]: sortOrder };
 
     const query = {};
 
@@ -51,10 +52,14 @@ const getAdminUsers = async ({
         query.email=email.toLowerCase();
     }
 
+    const { skip, limit: safeLimit, sort } = buildPaginationAndSort({
+        page, limit, sortBy, order, allowedSortFields, defaultSortField: "createdAt"
+    });
+
     const users = await User.find(query)
         .sort(sort)
         .skip(skip)
-        .limit(limit)
+        .limit(safeLimit)
         .select("-password");
 
     const totalUsers = await User.countDocuments(query);

@@ -1147,3 +1147,29 @@ Standardizing API responses using centralized response utilities.
 - Anchored controller vs service responsibilities explicitly
 
 ---
+
+# Day 42 — Pagination & Sorting Abstraction (Heavy Feature)
+
+## What we did
+- Introduced a reusable query helper `buildPaginationAndSort`
+- Extracted pagination and sorting computation from the admin service
+- Integrated the helper back into the admin service without changing behavior
+- Added an internal guard to enforce the contract between service and utility
+
+## Why we did it
+- Pagination and sorting logic was correct but cluttering the service
+- Reusable computation improves readability and scalability
+- Abstraction was introduced only after validation logic was stable
+- Guarding the helper prevents accidental misuse in future services
+
+## What went wrong
+- Nothing broke during refactor
+- Risk was controlled by keeping validation and DB logic untouched
+
+## How we ensured correctness
+- Kept all validation inside the service
+- Made the utility pure and side-effect free
+- Added explicit numeric guards to encode assumptions
+- Verified both valid and invalid request paths still behave correctly
+
+---
