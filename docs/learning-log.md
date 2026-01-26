@@ -1055,3 +1055,36 @@ Standardizing API responses using centralized response utilities.
 - Kept controllers unchanged and error flow consistent
 
 ---
+
+# Day 38 — Debugging, Observability, and Service Hardening
+
+## What we did
+- Investigated and fixed a 500 error occurring on valid admin list requests
+- Identified a runtime crash caused by an undefined `sortField` in the admin service
+- Corrected the sorting logic by explicitly defining `sortField`
+- Strengthened pagination validation to reject `page <= 0` and `limit <= 0`
+- Verified correct behavior for both valid and invalid query parameters
+
+## Why we did it
+- Valid requests returning 500 indicate runtime failures, not validation issues
+- Silent crashes undermine reliability and make debugging difficult
+- Service-level logic must be correct before adding observability or logging
+- Fixing real bugs builds stronger backend intuition than adding features
+
+## What went wrong
+- `sortField` was referenced without being defined after refactoring validation logic
+- This caused a `ReferenceError`, which surfaced as a generic 500 error
+- The error was masked by global error handling, making it appear unrelated
+
+## How we fixed it
+- Traced execution flow for valid vs invalid requests
+- Identified the exact line causing the runtime exception
+- Explicitly defined `sortField` after validating `sortBy`
+- Re-tested both happy and failure paths to confirm correctness
+
+## Notes / Assumptions
+- `NODE_ENV` is not currently defined in the environment configuration
+- As a result, error stack traces are never exposed
+- This behavior is acceptable for now and will be addressed in a dedicated environment-configuration task later
+
+---

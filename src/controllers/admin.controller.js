@@ -1,5 +1,6 @@
 const { sendSuccess } = require("../utils/response");
 const { getAdminUsers } = require("../services/admin.service");
+const { auditLog } = require("../utils/auditLogger");
 
 const getAllUsers = async (req, res, next ) =>{
     try{
@@ -13,6 +14,20 @@ const getAllUsers = async (req, res, next ) =>{
 
         });
         
+        auditLog({
+            userId: req.user?.id,
+            action: "ADMIN_USERS_LIST_FETCHED",
+            details: {
+                page: result.page, 
+                limit: result.limit, 
+                sortBy: result.sortBy, 
+                order: req.query.order, 
+                role: req.query.role, 
+                email: req.query.email
+            },
+            req
+        });    
+
         sendSuccess(
             res,
             200,

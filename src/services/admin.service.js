@@ -3,14 +3,14 @@ const AppError = require("../utils/appError");
 
 const getAdminUsers = async ({
     page = 1,
-    limit = 1,
+    limit = 10,
     sortBy = "createdAt",
     order = "desc",
     role,
     email
 }) =>{
     
-    if(page<0 || limit < 0){
+    if(page <= 0 || limit <= 0){
         throw new AppError("Page and limit must be positive numbers", 400);
     }     
 
@@ -22,7 +22,6 @@ const getAdminUsers = async ({
             
     const allowedSortFields = ["createdAt","name","email","role"];
 
-    // let sortField = allowedSortFields.includes(sortBy) ? sortBy : "createdAt";
     if(sortBy && !allowedSortFields.includes(sortBy)){
         throw new AppError(
             `Invalid sortBy field. Allowed fields: ${allowedSortFields.join(", ")}`,
@@ -30,6 +29,7 @@ const getAdminUsers = async ({
         );
     }
 
+    let sortField = sortBy || "createdAt";
     let sortOrder = order === 'asc' ? 1 : -1;
 
     
