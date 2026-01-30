@@ -881,6 +881,7 @@ These are deferred until there is a real need.
   "message": "Human readable message",
   "data": { ... }
 }
+```
 ---
 # Day 33 — Response Utilities & Output Consistency
 
@@ -926,6 +927,7 @@ These are deferred until there is a real need.
   "message": "Human readable message",
   "data": { ... }
 }
+```
 ---
 # Day 34 — Response Utilities Integration
 
@@ -1171,5 +1173,43 @@ Standardizing API responses using centralized response utilities.
 - Made the utility pure and side-effect free
 - Added explicit numeric guards to encode assumptions
 - Verified both valid and invalid request paths still behave correctly
+
+---
+
+# Day 44 — Persistent Sessions with Refresh Tokens (Auth Foundation)
+
+## What we did
+- Introduced a `RefreshToken` model to support persistent sessions
+- Modified login flow to issue:
+  - short-lived JWT access token (15 minutes)
+  - long-lived opaque refresh token (7 days)
+- Stored refresh tokens in the database instead of relying on stateless JWT refresh tokens
+- Hashed refresh tokens before persisting them to the database
+
+## Why we did it
+- Access tokens are intentionally short-lived for security, but this caused frequent re-login
+- Real-world systems maintain sessions using refresh tokens, not repeated logins
+- Database-backed refresh tokens allow:
+  - session revocation
+  - multi-device login
+  - proper logout handling
+  - password-change invalidation
+- Hashing refresh tokens ensures a database leak does not compromise active sessions
+
+## What went wrong / considerations
+- Multiple refresh token documents are created for the same user on repeated logins
+- This is intentional: each refresh token represents a distinct session
+- Token expiration does not automatically delete documents; validity is checked logically
+
+## How we fixed / secured things
+- Replaced JWT-based refresh tokens with opaque random tokens
+- Persisted refresh tokens with expiry metadata
+- Stored only hashed tokens in the database
+- Kept access token logic unchanged to avoid breaking existing routes
+
+## Notes / Future work
+- Implement `/auth/refresh` endpoint to rotate refresh tokens and issue new access tokens
+- Add refresh-token revocation on password change and logout
+- Optional: cleanup expired tokens or introduce TTL indexes later
 
 ---

@@ -4,6 +4,8 @@ const { loginUserService } = require("../services/user.service");
 const { auditLog } = require("../utils/auditLogger");
 const { sendSuccess } = require("../utils/response");
 const jwt =require("jsonwebtoken");
+const crypto = require("crypto");
+const RefreshToken = require("../models/refreshToken.model");
 
 const createUser = async (req, res, next)=>{
     try{
@@ -33,11 +35,18 @@ const loginUser = async (req, res, next) =>{
             { expiresIn: "15m" }
         );
 
-        const refreshToken = jwt.sign(
-            { userId: user._id },
-            process.env.JWT_REFRESH_SECRET,
-            { expiresIn: "7d"}
-        );
+        const refreshToken = crypto.randomBytes(64).toString("hex");
+
+        const refreshTokenExpiry = new Date();
+        refreshTokenExpiry.setDate(refreshTokenExpiry.getDate()+7);
+
+        const hashedRefreshToken = crypto.createHash("sha256").update(refreshToken).digest("hex");
+
+        await RefreshToken.create({
+            userId: user._id,
+            token: hashedRefreshToken,
+            expiresAt: refreshTokenExpiry
+        });
         
         auditLog({
             userId: user._id,
