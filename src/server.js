@@ -3,6 +3,7 @@ require("dotenv").config();
 
 const connectDB= require("./config/db");
 const userRoutes=require("./routes/user.routes");
+const authRoutes = require("./routes/auth.routes");
 const errorHandler=require("./middleware/error.middleware");
 const helmet = require("helmet");
 const morgan = require("morgan")
@@ -25,6 +26,7 @@ app.use(morgan("dev"));
 
 //routes
 app.use("/users",userRoutes);
+app.use("/auth",authRoutes);
 
 //error handling middleware (MUST be after routes)
 app.use(errorHandler);

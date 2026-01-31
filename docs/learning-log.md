@@ -1213,3 +1213,65 @@ Standardizing API responses using centralized response utilities.
 - Optional: cleanup expired tokens or introduce TTL indexes later
 
 ---
+
+# Day 45 — Authentication: Refresh Token Rotation + Postman Automation
+
+## What we did
+- Replaced JWT-based refresh tokens with **DB-backed opaque refresh tokens**
+- Implemented **refresh token rotation**
+  - Old refresh token is revoked on use
+  - New refresh token is generated and stored (hashed)
+- Introduced a dedicated **auth.controller**
+  - Moved login logic out of user.controller
+  - Centralized authentication workflows
+- Added `/auth/refresh` endpoint
+  - Validates refresh token against DB
+  - Issues new access + refresh tokens
+- Automated authentication flow in **Postman**
+  - Auto-store access & refresh tokens on login
+  - Auto-attach access token to protected requests
+  - Auto-refresh tokens on `401 Unauthorized`
+  - Removed manual token copy-paste during testing
+
+---
+
+## Why we did it
+- **Security**: Stateless refresh tokens cannot be revoked once leaked
+- **Control**: Server-side refresh tokens allow session tracking and revocation
+- **Real-world parity**: Matches production authentication architecture
+- **Developer experience**: Postman automation simulates frontend behavior
+- **Interview readiness**: Demonstrates deep understanding of auth lifecycle
+
+---
+
+## What went wrong
+- Refresh token flow initially increased manual testing effort
+- Postman UI no longer supports “Edit collection” via right-click
+- Deprecated `postman.setNextRequest` caused warnings
+- Confusion between responsibilities of:
+  - auth.controller
+  - auth.middleware
+
+---
+
+## How we fixed it
+- Migrated refresh logic to **stateful DB validation**
+- Used **Collection → Scripts** tab (new Postman UI)
+- Removed deprecated request chaining
+- Implemented modern Postman flow:
+  - Refresh tokens automatically
+  - Manual retry after refresh (stable & supported)
+- Clearly separated concerns:
+  - `auth.middleware` → request validation / access control
+  - `auth.controller` → token & session lifecycle
+
+---
+
+## Final outcome
+- Production-grade authentication system
+- Secure refresh token rotation with revocation
+- Session continuity without frequent re-login
+- Clean, automated testing workflow in Postman
+- Strong architectural explanation for interviews
+
+---

@@ -1,5 +1,6 @@
 const express = require("express");
-const { createUser, loginUser } = require("../controllers/user.controller");
+const { loginUser } = require("../controllers/auth.controller");
+const { createUser } = require("../controllers/user.controller");
 const { validateCreateUser, validateLoginUser, validateUpdateUser, validateChangePassword } = require("../middleware/user.validation");
 const router=express.Router();
 const authenticate = require("../middleware/auth.middleware");
@@ -21,8 +22,9 @@ router.post("/", validateCreateUser, createUser);
 // Login user and issue tokens
 router.post("/login",authLimiter,validateLoginUser,loginUser);
 
+// Deprected: JWT-based refresh token (replaced by DB-backed refresh tokens)
 // Refresh access token using refresh token
-router.post(
+/* router.post(
     "/refresh-token",
     authLimiter,
     async (req, res)=>{
@@ -60,6 +62,9 @@ router.post(
         }
     }
 );
+*/
+
+
 
 // Logout (client-side token discard)
 router.post(
