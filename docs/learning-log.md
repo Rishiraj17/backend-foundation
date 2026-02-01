@@ -1275,3 +1275,60 @@ Standardizing API responses using centralized response utilities.
 - Strong architectural explanation for interviews
 
 ---
+
+# Day 46 — Authentication Hardening: Logout & Session Limit
+
+## What we did
+- Implemented **logout functionality** using refresh token revocation
+- Added **session limit enforcement on login**
+  - Maximum 5 active sessions per user
+  - Oldest active sessions are revoked automatically on new login
+- Extended refresh-token–based session control without changing access token logic
+- Kept all logic inside `auth.controller` to maintain clear responsibility boundaries
+
+---
+
+## Why we did it
+- **Logout security**: Logging out should invalidate the server-side session, not just remove tokens from the client
+- **Session control**: Prevents unlimited concurrent logins and uncontrolled session growth
+- **Real-world parity**: Matches how production systems handle multi-device logins
+- **Interview readiness**: Demonstrates understanding of session lifecycle, not just token issuance
+
+---
+
+## What went wrong
+- Initial confusion around:
+  - Where logout route should live (auth vs user router)
+  - How to access refresh token when Postman automation hides it
+- Small implementation bugs:
+  - Typo in `revokedAt` field
+  - Incorrect document variable used during `.save()`
+  - Query sorting applied after `await`, causing logic error
+- Scope issue where `userId` was not explicitly defined in login flow
+
+---
+
+## How we fixed it
+- Clarified architectural rule:
+  - `auth.routes` → login, refresh, logout
+  - `user.routes` → profile, password, user data
+- Used Postman environment variables (`{{refreshToken}}`) for logout requests
+- Fixed typos and variable scoping issues
+- Corrected Mongoose query chaining by applying `.sort()` before `await`
+- Explicitly derived `userId` from authenticated user object
+- Revoked sessions by iterating over oldest active refresh tokens and setting `revokedAt`
+
+---
+
+## Final outcome
+- Users can explicitly **log out**, invalidating the current session
+- Active sessions per user are capped and controlled
+- Old sessions are safely revoked without deleting records
+- Authentication system now supports:
+  - login
+  - refresh
+  - logout
+  - session limiting
+- Strong, explainable auth design suitable for interviews
+
+---
