@@ -1,6 +1,6 @@
 const express = require("express");
 const { loginUser } = require("../controllers/auth.controller");
-const { createUser } = require("../controllers/user.controller");
+const { createUser, changePassword } = require("../controllers/user.controller");
 const { validateCreateUser, validateLoginUser, validateUpdateUser, validateChangePassword } = require("../middleware/user.validation");
 const router=express.Router();
 const authenticate = require("../middleware/auth.middleware");
@@ -229,6 +229,12 @@ router.put(
     }
 );
 
+
+router.patch("/change-password",
+    authenticate,
+    changePassword
+    
+)
 
 
 

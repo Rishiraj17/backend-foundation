@@ -1332,3 +1332,54 @@ Standardizing API responses using centralized response utilities.
 - Strong, explainable auth design suitable for interviews
 
 ---
+
+# Day 47 — Authentication Completion: Password Change & Global Session Revoke
+
+## What we did
+- Implemented **password change functionality** for authenticated users
+- Ensured user identity is derived strictly from `req.user` (access token)
+- Verified old password before allowing password update
+- Updated password using bcrypt hashing
+- **Revoked all active refresh-token sessions** after password change
+- Added audit logging for password change events
+
+---
+
+## Why we did it
+- **Security requirement**: After a password change, all existing sessions must be invalidated
+- **Threat mitigation**: Prevents stolen refresh tokens from remaining usable
+- **Session hygiene**: Ensures password rotation truly resets account access
+- **Interview completeness**: This is a core real-world auth rule often missed in projects
+
+---
+
+## What went wrong
+- Initial uncertainty about how user identity is accessed in controller logic
+- Confusion over whether userId should come from route params or request context
+- Need to validate whether `req.user` was correctly populated by authentication middleware
+
+---
+
+## How we fixed it
+- Confirmed `authenticate` middleware attaches user information to `req.user`
+- Used `req.user._id` as the single source of truth for user identity
+- Added defensive checks to handle missing or malformed `req.user`
+- Reused refresh-token revocation logic from previous day
+- Ensured password update occurs **before** session revocation to preserve correctness
+
+---
+
+## Final outcome
+- Users can securely change their password
+- All existing sessions across devices are invalidated immediately
+- Compromised or leaked refresh tokens are rendered useless
+- Authentication system now fully supports:
+  - login
+  - refresh
+  - logout
+  - session limiting
+  - global session revoke on password change
+
+- Auth module is now **production-grade and interview-ready**
+
+---
