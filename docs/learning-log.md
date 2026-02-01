@@ -1383,3 +1383,61 @@ Standardizing API responses using centralized response utilities.
 - Auth module is now **production-grade and interview-ready**
 
 ---
+## Session Summary — Router Cleanup & Architecture Freeze
+
+### What we did
+- Performed a full sanity and hygiene pass on all routers:
+  - `User.router`
+  - `Auth.router`
+  - `Admin.router`
+- Removed unused imports, legacy middleware, and deprecated code paths.
+- Deleted insecure and mixed-responsibility endpoints:
+  - Removed routes using `:userId` from user-facing flows.
+  - Removed deprecated refresh-token logic.
+- Split responsibilities cleanly across routers:
+  - Auth lifecycle → `Auth.router`
+  - Self-user actions → `User.router`
+  - Cross-user/admin actions → `Admin.router`
+- Verified all routes after cleanup to ensure no functionality was broken.
+- Finalized and froze routing structure before documentation.
+- Completed full architecture documentation:
+  - System overview
+  - Router-level architecture
+  - Request flow analysis
+  - Architecture guarantees (foundation stage)
+
+---
+
+### Why this was needed
+- Mixed routes and legacy imports made the codebase harder to reason about.
+- Ownership-based routes (`:userId`) increased security and maintenance risk.
+- Documentation required a stable, intentional architecture to reflect reality.
+- This session marks the **foundation freeze point** before feature expansion.
+
+---
+
+### What went wrong / issues encountered
+- Some routes were silently failing due to:
+  - missing leading slashes in paths
+  - incorrect middleware usage (`authorizeOwnership` vs `authorizeRoles`)
+- Legacy comments and imports caused confusion during review.
+- Admin and user responsibilities were previously overlapping.
+
+---
+
+### How we fixed it
+- Explicitly separated user and admin concerns at the router level.
+- Ensured all self-user routes derive identity from access tokens.
+- Ensured all cross-user operations are admin-only and explicit.
+- Cleaned router files to be documentation-ready.
+- Rewrote documentation to reflect **current guarantees**, not future plans.
+
+---
+
+### Outcome
+- Routing architecture is now stable, secure, and intentional.
+- Documentation accurately reflects the backend foundation.
+- Codebase is ready to be pushed as a clean baseline to GitHub.
+- Future feature work can proceed without architectural debt.
+
+---
