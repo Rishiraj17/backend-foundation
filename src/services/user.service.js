@@ -33,6 +33,18 @@ const loginUserService = async(email,password,req)=>{
         throw error;
     }
 
+    if(user.accountStatus !== "active"){
+        const error = new Error("Account is not active");
+        error.statusCode = 403;
+        throw error;
+    }
+
+    if(user.lockUntil && user.lockUntil > Date.now()){
+        const error = new Error("Account temporarily locked, Try again later.");
+        error.statusCode=401;
+        throw error;
+    }
+
     const isPasswordMatch = await bcrypt.compare(password,user.password);
 
     if(!isPasswordMatch){
@@ -43,9 +55,41 @@ const loginUserService = async(email,password,req)=>{
             req
         });
 
+        user.failedLoginAttempts += 1;
+        user.lastFailedLoginAt = new Date();
+
+        if(user.failedLoginAttempts >= 5 ){
+            user.failedLoginAttempts = 0;
+            user.lockUntil = new Date(Date.now()+ 15*60*1000);
+           
+            await user.save();
+
+            const error = new Error("Account temporarily locked, Try again later.");
+            error.statusCode=401;
+            throw error;
+        }
+
+        await user.save();
+
         const error=new Error("Invalid email or password");
         error.statusCode=401;
         throw error;
+    }
+
+    if(user.failedLoginAttempts>0 || user.lastFailedLoginAt || user.lockUntil){
+        user.failedLoginAttempts=0;
+        user.lastFailedLoginAt=null;
+        user.lockUntil=null;
+
+        await user.save();
+
+        auditLog({
+            userId: user._id,
+            action: "LOGIN_RECOVERY",
+            details: "LOGIN_AFTER_FAILURE_RESET",
+            req
+        });
+
     }
 
     return user;

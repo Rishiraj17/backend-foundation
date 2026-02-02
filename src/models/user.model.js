@@ -19,9 +19,28 @@ const userSchema = new mongoose.Schema({
     role:{
         type: String,
         enum: ["user", "admin"],
-        default:"user"
+        default: "user"
+    },
+    failedLoginAttempts:{
+        type: Number,
+        default: 0
+    },
+    lastFailedLoginAt:{
+        type: Date,
+        default: null
+    },
+    lockUntil:{
+        type: Date,
+        default: null,
+    },
+    accountStatus:{
+        type: String,
+        enum : ["active", "locked", "suspended"],
+        default:"active"
     }
-});
+},
+{ timestamps: true }
+);
 
 const User = mongoose.model("User",userSchema);
 
